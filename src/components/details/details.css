@@ -1,0 +1,47 @@
+.movieDeets {
+  margin: auto;
+  align-items: center;
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+  margin: 1% 20% 1% 20%;
+}
+.overview{
+  text-align: left;
+}
+
+.photo{
+  height: 400px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 20px 20px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+.genres{
+  padding :10px;
+}
+.centered{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: 100px;
+}
+
+/* .carousel .carousel-item {
+  height: 500px;
+}
+
+.carousel-item img {
+  position: absolute;
+  object-fit:cover;
+  top: 0;
+  left: 0;
+  max-width:100%;
+  height:auto;
+} */
+
+
+img {
+  max-width:100%;
+  height:auto;
+}
