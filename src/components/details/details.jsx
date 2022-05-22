@@ -4,8 +4,7 @@ import {
   Button,
   Typography,
   Stack,
-  Grid,
-  Rating
+  Grid  
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { MovieContext } from "../state/movieContext";
@@ -82,8 +81,9 @@ export const Details = () => {
   }, [selectedMovie]);
 
 
-  return !selectedMovie || id === ":id" ? (
+  return !selectedMovie ? (
     <div>
+      {console.log(selectedMovie + " the not " + !selectedMovie)}
       <p className="title"> Movie Details </p>
       <div className="centered">
         <Button
