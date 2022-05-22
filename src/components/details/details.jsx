@@ -24,7 +24,7 @@ export const Details = () => {
   const {id} = useParams();
 
   useEffect(() => {  
-    if(id !== selectedMovie){
+    if(id !== selectedMovie && id !==":id"){
       setSelectedMovie(id);
     }
     window.scrollTo(0, 0);
@@ -83,7 +83,7 @@ export const Details = () => {
 
   return !selectedMovie ? (
     <div>
-      {console.log(selectedMovie + " the not " + !selectedMovie)}
+      
       <p className="title"> Movie Details </p>
       <div className="centered">
         <Button

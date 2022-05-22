@@ -11,14 +11,9 @@ export const LikeButton = ({movie}) => {
   function handleLikeClick() {
    
     if(likedMovies.has(Number(movie.id))){
-      likedMovies.delete(movie.id);
-      console.log("inserting");
-      console.log(likedMovies);
     }
     else{
       likedMovies.set(Number(movie.id), {movie});
-      console.log("inserting");
-      console.log(likedMovies);
     }
     let copy = new Map(likedMovies);
     setLikedMovies(copy);
