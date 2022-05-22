@@ -5,15 +5,20 @@ import {MovieContext} from "../state/movieContext";
 import {IconButton, Tooltip} from "@mui/material";
 
 export const LikeButton = ({movie}) => {
+  
   const {likedMovies, setLikedMovies} = useContext(MovieContext);  
 
   function handleLikeClick() {
    
-    if(likedMovies.has(movie.id)){
+    if(likedMovies.has(Number(movie.id))){
       likedMovies.delete(movie.id);
+      console.log("inserting");
+      console.log(likedMovies);
     }
     else{
-      likedMovies.set(movie.id, {movie});
+      likedMovies.set(Number(movie.id), {movie});
+      console.log("inserting");
+      console.log(likedMovies);
     }
     let copy = new Map(likedMovies);
     setLikedMovies(copy);
@@ -21,6 +26,7 @@ export const LikeButton = ({movie}) => {
    
 
   return (
+   
     <Tooltip title="Like Movie">
     <IconButton
       size="medium"

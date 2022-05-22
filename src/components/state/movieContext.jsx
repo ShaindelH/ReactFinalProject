@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 
 export const MovieContext = React.createContext();
+
 export const MovieProvider = (props) => {
 const [displayMovies, setDisplayMovies] = useState(new Map([]));
 const [likedMovies, setLikedMovies] = useState(new Map([]));
-const [ratedMovies, setRatedMovies] = useState(new Map([]));
 const [movieSearch, setMovieSearch] = useState("Trending");
 const [selectedMovie, setSelectedMovie] = useState();
 var apiKey = "91353e9e0ae592ed9abfaeb0d5d467ed";
@@ -15,7 +15,7 @@ useEffect(() => {
   .then((data) => {
       let popularMovies = new Map([]);
       data.results.map(movie => {
-        popularMovies.set(movie.id, {title: movie.title, id: movie.id, img:`https://image.tmdb.org/t/p/w154${movie.poster_path}`, isLiked: false});
+        popularMovies.set(movie.id, {title: movie.title, id: movie.id, img:`https://image.tmdb.org/t/p/w154${movie.poster_path}`, isLiked: false, rating: movie.vote_average/2});
       })
       setDisplayMovies(popularMovies);
   })
@@ -28,8 +28,6 @@ useEffect(() => {
           setDisplayMovies,
           likedMovies,
           setLikedMovies,
-          ratedMovies,
-          setRatedMovies,
           selectedMovie,
           setSelectedMovie,
           movieSearch,

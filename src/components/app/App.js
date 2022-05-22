@@ -5,11 +5,13 @@ import {Header} from "../header/header";
 import {Details} from "../details/details";
 import {WatchList} from "../watchlist/watchlist";
 import {MovieProvider} from "../state/movieContext";
+import {SearchProvider} from "../state/searchContext";
 
 export const App = () => { 
 
   return (
     <div>
+      <SearchProvider>
       <MovieProvider>
       <HashRouter>
       <Header />
@@ -20,6 +22,7 @@ export const App = () => {
         </Routes>
       </HashRouter>
       </MovieProvider>
+      </SearchProvider>
     </div>
   );
 }

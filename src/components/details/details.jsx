@@ -1,131 +1,203 @@
 import "./details.css";
 import "../app/App.css";
-import {Card, CardContent, Button, Typography, Stack, Grid, Item} from "@mui/material";
-import React, {useState, useEffect, useContext} from "react";
-import {MovieContext} from "../state/movieContext";
-import {useNavigate} from 'react-router-dom';
-import {MovieCard} from "../movie/movie";
-import {LikeButton} from "../movie/likeButton";
-import Carousel from 'react-bootstrap/Carousel';
-import 'bootstrap/dist/css/bootstrap.css';
+import {
+  Button,
+  Typography,
+  Stack,
+  Grid,
+  Rating
+} from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { MovieContext } from "../state/movieContext";
+import { useNavigate, useParams} from "react-router-dom";
+import { MovieCard } from "../movie/movie";
+import { LikeButton } from "../movie/likeButton";
+import Carousel from "react-bootstrap/Carousel";
+import "bootstrap/dist/css/bootstrap.css";
 
-export const Details = () => { 
-    const {selectedMovie} = useContext(MovieContext);
-        const [movie, setMovie] = useState({});
-        const[genres, setGenres] = useState([]);
-        const[similarMovies, setSimilarMovies] = useState([]);
-        const[cast, setCast] = useState([{}]);
-        const navigate = useNavigate();
+export const Details = () => {
+  const { selectedMovie, setSelectedMovie, likedMovies } = useContext(MovieContext);
+  const [movie, setMovie] = useState({});
+  const [genres, setGenres] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [cast, setCast] = useState([{}]);
+  const navigate = useNavigate();
+  const {id} = useParams();
 
-        useEffect(() => {
-            fetch(`https://api.themoviedb.org/3/movie/${selectedMovie}?api_key=91353e9e0ae592ed9abfaeb0d5d467ed`)
-            .then(result => result.json())
-            .then((data) => {
-                
-                setMovie({title: data.title, id: selectedMovie, img: `https://image.tmdb.org/t/p/w154${data.poster_path}`, overview: data.overview, 
-                runtime: data.runtime, date: data.release_date, vote: data.vote_average});  
-                const genre = data.genres.map(item => {
-                    return item.name
-                })
-                setGenres(genre);
-            });
-            
-            fetch(`https://api.themoviedb.org/3/movie/${selectedMovie}/similar?api_key=91353e9e0ae592ed9abfaeb0d5d467ed&language=en-US&page=1`)
-            .then(result => result.json())
-                .then((data) => {
-                    const newMovies = data.results.slice(0,3).map(element => {
-                        return {title: element.title, id: element.id, img: `https://image.tmdb.org/t/p/w154${element.poster_path}`, vote: element.vote_average} 
-                        })
-                    setSimilarMovies(newMovies);
-                });
-
-                fetch(`https://api.themoviedb.org/3/movie/${selectedMovie}/credits?api_key=91353e9e0ae592ed9abfaeb0d5d467ed&language=en-US`)
-                .then(result => result.json())
-                .then((data) => {
-                    const castInfo = data.cast.map(member => {
-                       if(typeof member.profile_path != "undefined"){
-                            return {name: member.name, img: `https://image.tmdb.org/t/p/w45${member.profile_path}`, character: member.character}
-                        }  
-                    })
-                    setCast(castInfo);                    
-                });
-          }, []);
-
-        return(
-            !selectedMovie ? 
-            <div>
-            <p className="title"> Movie Details </p>
-            <div className="centered">
-                
-                <Button variant="contained" 
-                    onClick={() => {
-                    navigate(`/`);
-                  }}
-                >      
-                    Explore Movies
-                </Button> 
-                </div>
-                </div>
-                :
-                <div className="movieDeets">
-                <p className="title">{movie.title}<LikeButton movie={movie}/>
-                </p>
-                <Stack sx= {{justifyContent:'center'}} direction="row" spacing={3}>
-                        {/* <Typography variant="body2">{movie.date.substring(0, movie.date.indexOf("-"))} </Typography> */}
-                        <Typography variant="body2">{Math.floor(movie.runtime/60) + " hrs " + movie.runtime % 60 + " mins"}</Typography>
-                </Stack>
-                <Stack className= "genres" sx= {{justifyContent: "center"}} direction="row" spacing={3}>
-                {genres.map(genre => 
-                    <Typography variant="body2">{genre}</Typography>)
-                }
-                </Stack>  
-                <img className="photo" src={movie.img} alt={movie.title}/>
-                <p style={{fontSize:25}} className="title" >Overview</p>
-                <Typography variant="body1">{movie.overview}</Typography>
-                
-                
-                 <p style={{fontSize:25}} className="title" >Cast</p>
-                <Slideshow cast={cast}/>
-                <p style={{fontSize:25}} className="title" >Similar Movies</p>
-               
-                {/* <Stack direction="row" spacing={3}>
-                {similarMovies.map(movie => {
-                     return <MovieCard movie ={movie}/>}
-                )}
-                </Stack> */}
-               <Grid container alignItems="stretch" direction="row" justifyContent="center" spacing={2} >
-               {similarMovies.map(movie => {
-                    return <Grid item style={{height: "100%"}} xs={4}>    
-                    <MovieCard movie={movie} /></Grid>
-               })}
-                </Grid>
-            </div>
-        );
+  useEffect(() => {
+    console.log("liked? " + likedMovies.has(id));
+  
+    if(id !== selectedMovie){
+      setSelectedMovie(id);
     }
+    window.scrollTo(0, 0);
+    fetch(
+      `https://api.themoviedb.org/3/movie/${selectedMovie}?api_key=91353e9e0ae592ed9abfaeb0d5d467ed`
+    )
+      .then((result) => result.json())
+      .then((data) => {
+        const currMovie = {
+          title: data.title,
+          id: Number(selectedMovie),
+          img: `https://image.tmdb.org/t/p/w154${data.poster_path}`,
+          overview: data.overview,
+          runtime: data.runtime,
+          year: data.release_date.substring(0, data.release_date.indexOf("-")),
+          rating: (data.vote_average / 2), //convert from out of 10 to out of 5
+        };
+        setMovie(currMovie);
 
-  const Slideshow = ({cast}) =>{
-      
-      return (
+        console.log("rate " + movie.rating + " /2 = " + movie.rating/2);
+        const genre = data.genres.map((item) => {
+          return item.name;
+        });
+        setGenres(genre);
+      });
+
+    fetch(
+      `https://api.themoviedb.org/3/movie/${selectedMovie}/similar?api_key=91353e9e0ae592ed9abfaeb0d5d467ed&language=en-US&page=1`
+    )
+      .then((result) => result.json())
+      .then((data) => {
+        const newMovies = data.results.slice(0, 3).map((element) => {
+          return {
+            title: element.title,
+            id: element.id,
+            img: `https://image.tmdb.org/t/p/w154${element.poster_path}`,
+            rating: element.vote_average / 2, //convert from out of 10 to out of 5
+          };
+        });
+        setSimilarMovies(newMovies);
+      });
+
+    fetch(
+      `https://api.themoviedb.org/3/movie/${selectedMovie}/credits?api_key=91353e9e0ae592ed9abfaeb0d5d467ed&language=en-US`
+    )
+      .then((result) => result.json())
+      .then((data) => {
+        const castInfo = data.cast.map((member) => {
+          return {
+            name: member.name,
+            img: `https://image.tmdb.org/t/p/w185${member.profile_path}`,
+            character: member.character,
+          };
+        });
+        setCast(castInfo);
+      });
+  }, [selectedMovie]);
+
+  return !selectedMovie ? (
+    <div>
+      <p className="title"> Movie Details </p>
+      <div className="centered">
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate(`/`);
+          }}
+        >
+          Explore Movies
+        </Button>
+      </div>
+    </div>
+  ) : (
+    <div>
+      <p className="title">
+        {movie.title}
+        <LikeButton movie={movie} />
+      </p>
+      <div className="movieDeets">
+        <Stack sx={{ justifyContent: "center" }} direction="row" spacing={3}>
+          <Typography variant="body2">{movie.year} </Typography>
+          <Typography variant="body2">
+            {Math.floor(movie.runtime / 60) +
+              " hrs " +
+              (movie.runtime % 60) +
+              " mins"}
+          </Typography>
+        </Stack>
+        <Stack
+          className="genres"
+          sx={{ justifyContent: "center" }}
+          direction="row"
+          spacing={3}
+        >
+          {genres.map((genre) => (
+            <Typography variant="body2">{genre}</Typography>
+          ))}
+        </Stack>
         <div>
-         {/* <div> class="carousel-inner" role="listbox" style="max-width:900px; max-height:600px !important;"> */}
-        <Carousel interval={1000}>
-            {cast.map(actor => 
-            {return <Carousel.Item>
-          <img sx={{height: "400px"}}
-            className="d-block w-100"
-            src={actor.img}
-            alt={actor.name}
-          />
-          <Carousel.Caption>
-            <h3>{actor.name}</h3>
-            <p>Character: {actor.character}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        })}
-        </Carousel>
+          <img className="photo" src={movie.img} alt={movie.title} />
         </div>
-      )
-  }
+        <Rating
+        name="simple-controlled"
+        value={movie.rating}
+        precision={0.5} 
+        readOnly
+        />
 
+        <p style={{ fontSize: 35 }} className="title">
+          Overview
+        </p>
+        <p style={{ fontSize: 30, fontFamily: "Segoe UI" }}>{movie.overview}</p>
 
-   
+        <p style={{ fontSize: 35 }} className="title">
+          Cast
+        </p>
+        <div className="carousel">
+        <Carousel 
+        interval={1000}
+        style={{ height: "450px", width: "300px"}}
+      >
+        {cast.map((actor) => {
+          // console.log(actor.img);
+          //  if (actor.img.substring(actor.img.length - 4) !== "null") {
+            return (
+              <Carousel.Item style={{ height: "450px", width: "300px" }}>
+                <img
+                  style={{ height: "450px", width: "300px" }}
+                  className="d-block w-100"
+                  src={actor.img}
+                  alt={actor.name}
+                />
+                <Carousel.Caption>
+                  <h3>{actor.name}</h3>
+                  <p>Character: {actor.character}</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+            );
+          // }
+        })}
+      </Carousel>
+      </div>
+        {/* <Slideshow cast={cast} /> */}
+        <p style={{ fontSize: 35 }} className="title">
+          Similar Movies
+        </p>
+        <Grid
+          container
+          alignItems="stretch"
+          direction="row"
+          justifyContent="center"
+          spacing={2}
+        >
+          {similarMovies.map((movie) => {
+            return (
+              <Grid item style={{ height: "100%" ,width:"300px"}} >
+                <MovieCard movie={movie} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </div>
+    </div>
+  );
+};
+
+const Slideshow = ({ cast }) => {
+  return (
+    <div style={{justifyContent: "center"}}>
+      
+    </div>
+  );
+};
