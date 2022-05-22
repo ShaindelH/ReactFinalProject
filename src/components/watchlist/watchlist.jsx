@@ -1,8 +1,7 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {MovieContext} from "../state/movieContext";
 import {MovieCard} from "../movie/movie";
 import {Grid} from "@mui/material";
-
 import "../explore/explore.css";
 
 export const WatchList = () =>{

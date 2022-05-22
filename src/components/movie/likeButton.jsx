@@ -24,7 +24,6 @@ export const LikeButton = ({movie}) => {
     setLikedMovies(copy);
   }
    
-
   return (
    
     <Tooltip title="Like Movie">

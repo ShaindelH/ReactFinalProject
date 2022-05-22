@@ -5,13 +5,10 @@ import React, {useState, useContext} from 'react';
 import {MovieContext} from "../state/movieContext";
 import {MovieCard} from "../movie/movie";
 import SearchIcon from '@mui/icons-material/Search';
-import {SearchContext} from "../state/searchContext";
-import {Actions} from "../state/reducer";
 
 export const Explore = () => {
     const [searchText, setSearchText] = useState("");
-    const { movieSearch,  dispatch: searchDispatch } = useContext(SearchContext);
-    const {setDisplayMovies, displayMovies, setMovieSearch} = useContext(MovieContext);
+    const {setDisplayMovies, displayMovies, movieSearch, setMovieSearch} = useContext(MovieContext);
     var apiKey = "91353e9e0ae592ed9abfaeb0d5d467ed";
 
    
@@ -25,12 +22,7 @@ export const Explore = () => {
             });
             
             setDisplayMovies(newMovies);
-            //setMovieSearch(`"${searchText}"`);
-            const text =`"${searchText}"`;
-            searchDispatch({
-              type: Actions.UPDATE_SEARCH_TEXT,
-              text,
-            })
+            setMovieSearch(`"${searchText}"`);
         }) 
     }
 
@@ -39,7 +31,6 @@ export const Explore = () => {
         searchMovie();
       }
     }
-
     
     return (
     <div className="explore">
@@ -59,13 +50,13 @@ export const Explore = () => {
         </div>
         <p style={{fontSize:45}} className="title">{movieSearch} MOVIES</p>
         <Grid container alignItems="stretch" direction="row" justifyContent="center" spacing={2} >
-               {[...displayMovies.keys()].map(key => {
-                  if (displayMovies.get(key).img.substring(displayMovies.get(key).img.length - 4) !== "null") {
-                    return <Grid item style={{height: "100%", width: "300px"}}>    
+          {[...displayMovies.keys()].map(key => {
+            if (displayMovies.get(key).img.substring(displayMovies.get(key).img.length - 4) !== "null") {
+                return <Grid item style={{height: "100%", width: "300px"}}>    
                     <MovieCard movie={displayMovies.get(key)} /></Grid>
-                  }
-               })}
-                </Grid>
+            }
+          })}
+        </Grid>
     </div>
   );
   }

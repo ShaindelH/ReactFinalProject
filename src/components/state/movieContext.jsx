@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-
 export const MovieContext = React.createContext();
 
 export const MovieProvider = (props) => {
@@ -31,7 +30,7 @@ useEffect(() => {
           selectedMovie,
           setSelectedMovie,
           movieSearch,
-          setMovieSearch,
+          setMovieSearch
         }}
       >
      {props.children}

@@ -24,21 +24,3 @@
     text-overflow: hidden; 
 }
 
-.likeButton{
-    position:float;
-    display:inline;
-    z-index:1000px;
-    cursor: pointer;
-}
-.likeButton:hover{
-    
-        background-position: 100% 0;
-       
-        -o-transition: all .4s ease-in-out;
-        -webkit-transition: all .4s ease-in-out;
-        transition: all .4s ease-in-out;
-    
-}
-.likeButton:focus {
-    outline: none;
-}

@@ -16,7 +16,7 @@ import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.css";
 
 export const Details = () => {
-  const { selectedMovie, setSelectedMovie, likedMovies } = useContext(MovieContext);
+  const { selectedMovie, setSelectedMovie} = useContext(MovieContext);
   const [movie, setMovie] = useState({});
   const [genres, setGenres] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([]);
@@ -24,9 +24,7 @@ export const Details = () => {
   const navigate = useNavigate();
   const {id} = useParams();
 
-  useEffect(() => {
-    console.log("liked? " + likedMovies.has(id));
-  
+  useEffect(() => {  
     if(id !== selectedMovie){
       setSelectedMovie(id);
     }
@@ -42,12 +40,9 @@ export const Details = () => {
           img: `https://image.tmdb.org/t/p/w154${data.poster_path}`,
           overview: data.overview,
           runtime: data.runtime,
-          year: data.release_date.substring(0, data.release_date.indexOf("-")),
-          rating: (data.vote_average / 2), //convert from out of 10 to out of 5
+          year: data.release_date.substring(0, data.release_date.indexOf("-"))
         };
         setMovie(currMovie);
-
-        console.log("rate " + movie.rating + " /2 = " + movie.rating/2);
         const genre = data.genres.map((item) => {
           return item.name;
         });
@@ -86,11 +81,13 @@ export const Details = () => {
       });
   }, [selectedMovie]);
 
-  return !selectedMovie ? (
+
+  return !selectedMovie || id === ":id" ? (
     <div>
       <p className="title"> Movie Details </p>
       <div className="centered">
         <Button
+        style={{ backgroundColor:"black"}}
           variant="contained"
           onClick={() => {
             navigate(`/`);
@@ -129,13 +126,6 @@ export const Details = () => {
         <div>
           <img className="photo" src={movie.img} alt={movie.title} />
         </div>
-        <Rating
-        name="simple-controlled"
-        value={movie.rating}
-        precision={0.5} 
-        readOnly
-        />
-
         <p style={{ fontSize: 35 }} className="title">
           Overview
         </p>
@@ -150,8 +140,6 @@ export const Details = () => {
         style={{ height: "450px", width: "300px"}}
       >
         {cast.map((actor) => {
-          // console.log(actor.img);
-          //  if (actor.img.substring(actor.img.length - 4) !== "null") {
             return (
               <Carousel.Item style={{ height: "450px", width: "300px" }}>
                 <img
@@ -166,11 +154,9 @@ export const Details = () => {
                 </Carousel.Caption>
               </Carousel.Item>
             );
-          // }
         })}
       </Carousel>
       </div>
-        {/* <Slideshow cast={cast} /> */}
         <p style={{ fontSize: 35 }} className="title">
           Similar Movies
         </p>
@@ -194,10 +180,3 @@ export const Details = () => {
   );
 };
 
-const Slideshow = ({ cast }) => {
-  return (
-    <div style={{justifyContent: "center"}}>
-      
-    </div>
-  );
-};
